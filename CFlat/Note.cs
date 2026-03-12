@@ -2,8 +2,8 @@
 
 public struct Note
 {
-    private readonly char letter;
-    private readonly byte value;
+    private char letter;
+    private byte value;
 
     public Note()
     {
