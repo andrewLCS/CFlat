@@ -4,9 +4,9 @@ public class Chord
 {
     private List<Note> notes = new List<Note>();
 
-    public Chord(params Note[] ns)
+    public Chord(params Note[] notes)
     {
-        foreach (var note in ns)
+        foreach (var note in notes)
         {
             this.notes.Append(note);
         }
