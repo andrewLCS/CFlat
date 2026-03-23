@@ -4,9 +4,10 @@ public struct Note
 {
     public enum Letter
     {
-        A, B, C, D, E, F, G
+        C, D, E, F, G, A, B
     }
-    public enum Accent
+
+    public enum Accidental
     {
         DoubleFlat = -2,
         Flat = -1,
@@ -15,61 +16,57 @@ public struct Note
         DoubleSharp = 2
     }
 
-    private Letter letter;
-    private Accent accent;
-    private int octave;
+    private int value;
+    private int oct;
 
     public Note()
     {
-        letter = Letter.C;
-        accent = Accent.Natural;
-        octave = 3; // "middle C"
+        value = 0;
+        oct = 3; // "middle C"
     }
 
     public Note(string note)
     {
-        (Letter letter, Accent accent, int octave) = ParseNoteString(note);
-        this.letter = letter;
-        this.accent = accent;
-        this.octave = octave;
+        (int value, int octave) = NoteStringToNote(note);
+        this.value = value;
+        this.oct = octave;
     }
 
-    public Note(Letter letter, Accent accent, int octave)
+    public Note(Letter letter, Accidental acc, int octave)
     {
-        this.letter = letter;
-        this.accent = accent;
-        this.octave = octave;
+        this.value = NoteToValue(letter, acc);
+        this.oct = octave;
     }
 
     public override readonly string ToString()
     {
-        return letter.ToString() + AccentToString() + octave;
+        return value + "" + oct;
     }
 
-    private readonly string AccentToString() =>
+    private static string AccidentalToString(Accidental accent) =>
         accent switch 
         {
-            Accent.DoubleFlat => "bb",
-            Accent.Flat => "b",
-            Accent.Natural => "",
-            Accent.Sharp => "#",
-            Accent.DoubleSharp => "##",
-            _ => throw new ArgumentException($"Invalid accent value {accent}")
+            Accidental.DoubleFlat => "bb",
+            Accidental.Flat => "b",
+            Accidental.Natural => "",
+            Accidental.Sharp => "#",
+            Accidental.DoubleSharp => "##",
+            _ => throw new ArgumentException($"Invalid accidental value {accent}")
         };
 
-    private readonly Accent StringToAccent(string accent) =>
-        accent switch 
+    private static Accidental StringToAccidental(string str) =>
+        str switch 
         {
-            "bb" => Accent.DoubleFlat,
-            "b" => Accent.Flat,
-            "" => Accent.Natural,
-            "#" => Accent.Sharp,
-            "##" => Accent.DoubleSharp,
-            _ => throw new ArgumentException($"Invalid accent value {accent}")
+            "bb" => Accidental.DoubleFlat,
+            "b" => Accidental.Flat,
+            "" => Accidental.Natural,
+            "#" => Accidental.Sharp,
+            "##" => Accidental.DoubleSharp,
+            _ => throw new ArgumentException($"Invalid accidental: {str}")
         };
 
     // need to rewrite this method using regex, will probably make life easier
-    private static (Letter, Accent, int) ParseNoteString(string noteString)
+    private static (int, int) NoteStringToNote(string noteString)
     {
 
         if (string.IsNullOrEmpty(noteString))
@@ -81,12 +78,12 @@ public struct Note
         Letter noteLetter = letterParse;
 
         char secondChar = noteString[1];
-        if (Char.IsNumber(secondChar)) // octave, no accent
+        if (char.IsNumber(secondChar)) // octave, no accent
         {
             if (noteString.Length > 2)
                 throw new ArgumentException("Octave value must be only one digit 0-8.");
         }
-        Accent noteAccent = Accent.Natural;
+        Accidental noteAccent = Accidental.Natural;
 
         return (noteLetter, noteAccent, 3);
     }
