@@ -9,38 +9,38 @@ public struct Note
 
     public enum Accidental
     {
-        DoubleFlat = -2,
-        Flat = -1,
-        Natural = 0,
-        Sharp = 1,
-        DoubleSharp = 2
+        DoubleFlat = -2, 
+        Flat = -1, 
+        Natural = 0, 
+        Sharp = 1, 
+        DoubleSharp = 2 
     }
 
-    private int value;
-    private int oct;
+    private int id;
+    private int octave;
 
     public Note()
     {
-        value = 0;
-        oct = 3; // "middle C"
+        id = 0;
+        octave = 3; // "middle C"
     }
 
     public Note(string note)
     {
-        (int value, int octave) = NoteStringToNote(note);
-        this.value = value;
-        this.oct = octave;
+        (int id, int octave) = NoteStringToNote(note);
+        this.id = id;
+        this.octave = octave;
     }
 
-    public Note(Letter letter, Accidental acc, int octave)
+    public Note(Letter letter, int octave)
     {
-        this.value = NoteToValue(letter, acc);
-        this.oct = octave;
+        this.id = NoteToID(letter, octave);
+        this.octave = octave;
     }
 
     public override readonly string ToString()
     {
-        return value + "" + oct;
+        return id + "" + octave;
     }
 
     private static string AccidentalToString(Accidental accent) =>
@@ -85,7 +85,7 @@ public struct Note
         }
         Accidental noteAccent = Accidental.Natural;
 
-        return (noteLetter, noteAccent, 3);
+        return (1, 3);
     }
 
 }
